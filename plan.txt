@@ -21,4 +21,68 @@ QUEUES
 	2 character writes toupper reads
 	3 toupper writes writer reads
 
+plan set consumer to read to write filename to std output
 
+set main function in producer to read from stdin
+
+in main program create pipe redirect output of consumer to producer.
+
+
+
+document
+
+Operating Systems   Project 2  
+University at Albany
+Department of Computer Science
+CSI 500
+Purpose of the Project
+The goal of this assignment is to gain an understanding of semaphores through the use of pthreads by designing and implementing a multi-threaded application. A secondary goal is to understand how semaphores are used in operating systems and applications. You are to write both a producer and a consumer C programs that uses pthread to process and synchronize concurrent file activities. 
+
+The Details
+Your solution must include the following:
+1.	The Consumer
+Submits processing requests to the producer by supplying a file name, its location and a character. It also outputs the contents of the file provided by the producer to the standard output. 
+2.	The Producer
+Accepts multiple consumer requests and processes each request by creating the following four threads.
+1	The reader thread will read an input file, one line at a time. It will pass each line of input to the character thread through a queue of messages.
+2	The character thread component will scan the line and replace each blank character by the character supplied by the client. It will then pass the line to the toUpper thread through another queue of messages.
+3	The toUpper thread component will scan the line and convert all lowercase letters to upper case. It will then pass the converted line to the writer thread through another queue of messages.
+4	The writer thread will write the line to an output file.           
+The producer will also return both the file name as well as its location to the consumer, when the end of input file is reached.
+Implementation Details
+1.	You must develop a module that implements a queue of character string buffer.
+2.	This structure will be an array of pointers to strings with integers (pointers) to indicate the head and tail of the list.
+3.	The maximum size of the buffer array will be 10.
+4.	Buffers will be created by the reader thread and destroyed by the writer thread.
+5.	Threads should terminate when end of input file is reached. 
+6.	Your solution must not use any libraries for the memory sharing management, except the pthread library. This means all data structures included in your solution must have been developed by you.
+Due Date
+The project is due on Wednesday, March xth, 2020. 
+Expectation
+Your program should be layered, modularized and well commented. The following is a tentative marking scheme and what is expected to be submitted for this assignment:
+
+
+1.	External Documentation including [5-10 pages]
+a.	Title page
+b.	A table of contents
+c.	[20%] System documentation
+i.	A high-level data flow diagram for the system
+ii.	A list of routines and their brief descriptions
+iii.	Implementation details
+d.	[5%] Test documentation
+i.	How you tested your program
+ii.	Testing outputs
+e.	[5%] User documentation
+i.	Where is your source
+ii.	How to run your program
+iii.	Describe parameter (if any)
+
+2.	Source Code
+a.	[65%] Correctness
+b.	[5%] Programming style
+i.	Layering
+ii.	Readability
+iii.	Comments
+iv.	Efficiency
+
+https://www.geeksforgeeks.org/mutex-lock-for-linux-thread-synchronization/
