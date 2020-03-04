@@ -1,5 +1,24 @@
-mult threading section
+mult- threading section
 1 four threads
 
 2 queues
+
+modules 
+functionality will be stored in 2 files consumer.c
+producer.c
+Consumer
+	 will submit requests to producer
+	It will send a character and filewith path
+Producer
+	will process file sent from consumer.
+	4 threads will be created
+	reader
+	character
+	toupper
+	writer
+QUEUES
+	1 reader writes character reads
+	2 character writes toupper reads
+	3 toupper writes writer reads
+
 
