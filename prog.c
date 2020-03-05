@@ -19,8 +19,34 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
     pid = fork();
+    if( pid>0)
+    {
+        // current set
+        close (fd[0]);
+        int fdesc =dup2(fd[1], STDOUT_FILENO);
+        if(fdesc<0)
+        {
+            fprintf(stderr, "C1 Failed to DUP");
+            exit(EXIT_FAILURE);
+        }
+        //write to stdout
+        pid = wait(&status);
+
+
+
+
+    }
+    if(pid==0)
+    {
+
+
+
+
+        
+    }
     if(pid<0)
     {
+        
         exit(EXIT_FAILURE);
     }
 
