@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
     }
     if(pid==0)
     {
-
+        // start threads in producer
 
 
 
