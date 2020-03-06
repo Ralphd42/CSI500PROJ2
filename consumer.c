@@ -10,10 +10,12 @@ void processFile(char * fname)
 {
     FILE* fp = fopen(fname, "rb");
     //ssize_t	getline (char **, size_t *, FILE *);
-    ssize_t read =
+    ssize_t read ;
+    size_t len;
+    char * line;
     while ((read = getline(&line, &len, fp)) != -1) 
     {
-
+        
 
 
     }
