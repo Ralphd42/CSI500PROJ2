@@ -7,6 +7,17 @@
 #include "producer.h"
 int main(int argc, char *argv[])
 {
+    
+
+
+
+
+    exit(EXIT_SUCCESS);
+}
+
+
+int main_old(int argc, char *argv[])
+{
     char filename []="./input.txt";
     int status;
     int fd [2];

@@ -1,3 +1,6 @@
+#ifndef __PROD_H__
+#define __PROD_H__
+
 #include<pthread.h>
 #include<stdio.h>
 #include<stdlib.h>
@@ -25,3 +28,4 @@ pthread_mutex_t muttoUpperQueue = PTHREAD_MUTEX_INITIALIZER;// mutex for toUpper
 pthread_mutex_t MmutwriterQueue = PTHREAD_MUTEX_INITIALIZER;
 
 
+#endif
