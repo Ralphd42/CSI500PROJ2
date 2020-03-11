@@ -1,4 +1,5 @@
 #include "consumer.h"
+#include "producer.h"
 /*
     this needs to do the following
     1 get item 1 at a time from file
@@ -35,6 +36,7 @@ void processFile(char * fname)
         {
             pipeouput(fd);
             int status;
+            printf("./input.txt");
             pid = wait(&status);
 
 
@@ -45,7 +47,18 @@ void processFile(char * fname)
             // do fork proc
             // test read lines and exit
             void ReadPipe( fd);
+            pthread_t Reader;
+            FileData Fd;
+            char input[20];
+            scanf("%s",input);
 
+            Fd.toreplace ='c';
+            Fd.FileNameDesc =input;
+            pthread_create(&Reader,NULL,readerThread ,(void *) &Fd );
+            void * status;
+            pthread_join(Reader,status  );
+            
+            
             exit(EXIT_SUCCESS);
         }
 

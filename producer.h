@@ -2,6 +2,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include <unistd.h>
 void *readerThread( void *arg);
 void *characterThread( void *arg);
 void *toupperThread( void *arg);

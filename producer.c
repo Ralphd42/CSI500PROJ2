@@ -22,7 +22,12 @@ void *readerThread( void *arg)
     while ((read = getline(&line, &len, fp)) != -1) 
     {
         pthread_mutex_lock(&mutcharQueue);
-        
+        strncat(charQueue,line, 10 );
+
+
+
+
+
 
         pthread_mutex_unlock(&mutcharQueue);
 
@@ -33,6 +38,11 @@ void *readerThread( void *arg)
 
 void *characterThread( void *arg)
 {
+    pthread_mutex_lock(&mutcharQueue);
+
+
+    printf("\n%s\n", charQueue  );
+    pthread_mutex_unlock(&mutcharQueue);
     pthread_exit(NULL);
 }
 
