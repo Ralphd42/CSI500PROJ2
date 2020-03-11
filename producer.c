@@ -23,13 +23,16 @@ void *readerThread( void *arg)
     {
         pthread_mutex_lock(&mutcharQueue);
         strncat(charQueue,line, 10 );
-
+        pthread_t charTh; 
+        pthread_create(&charTh,NULL,characterThread ,(void *) NULL );
 
 
 
 
 
         pthread_mutex_unlock(&mutcharQueue);
+        int status;
+        pthread_join(charTh,&status);
 
     }
 

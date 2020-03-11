@@ -46,7 +46,7 @@ void processFile(char * fname)
         {
             // do fork proc
             // test read lines and exit
-            void ReadPipe( fd);
+            ReadPipe( fd);
             pthread_t Reader;
             FileData Fd;
             char input[20];
