@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS =  
 LDFLAGS = -lpthread
-OBJFILES = prog.o consumer.o producer.c
+OBJFILES = prog.o consumer.o producer.o
 TARGET = prog.exe
 all: $(TARGET)
 $(TARGET): $(OBJFILES)
