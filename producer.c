@@ -1,5 +1,8 @@
 #include "producer.h"
 
+pthread_mutex_t mutcharQueue    = PTHREAD_MUTEX_INITIALIZER;  // mutex for character Queue
+pthread_mutex_t muttoUpperQueue = PTHREAD_MUTEX_INITIALIZER;// mutex for toUpperQueue
+pthread_mutex_t MmutwriterQueue = PTHREAD_MUTEX_INITIALIZER;
 
 
 
@@ -11,9 +14,10 @@
 void *readerThread( void *arg)
 {
      
-
+    printf("\n1\n");
 
     FileData * fd = (FileData *) arg;
+    printf( "\ndesc %s\n", fd->FileNameDesc);
     FILE* fp = fopen(fd->FileNameDesc, "rb");
     //ssize_t	getline (char **, size_t *, FILE *);
     ssize_t read ;
@@ -31,7 +35,7 @@ void *readerThread( void *arg)
 
 
         pthread_mutex_unlock(&mutcharQueue);
-        int status;
+        void * status;
         pthread_join(charTh,&status);
 
     }

@@ -1,5 +1,8 @@
 #include "consumer.h"
 #include "producer.h"
+
+
+
 /*
     this needs to do the following
     1 get item 1 at a time from file
@@ -9,6 +12,7 @@
 */
 void processFile(char * fname)
 {
+    printf("\nfname %s\n",fname);
     FILE* fp = fopen(fname, "rb");
     //ssize_t	getline (char **, size_t *, FILE *);
     ssize_t read ;
@@ -34,9 +38,10 @@ void processFile(char * fname)
         }
         if( pid>0)
         {
+            printf("\nPIPE\n");
             pipeouput(fd);
             int status;
-            printf("./input.txt");
+            printf("./input.txt\n\n");
             pid = wait(&status);
 
 
@@ -44,27 +49,18 @@ void processFile(char * fname)
         }
         if( pid==0)
         {
-            // do fork proc
-            // test read lines and exit
             ReadPipe( fd);
             pthread_t Reader;
             FileData Fd;
             char input[20];
             scanf("%s",input);
-
             Fd.toreplace ='c';
             Fd.FileNameDesc =input;
             pthread_create(&Reader,NULL,readerThread ,(void *) &Fd );
             void * status;
             pthread_join(Reader,status  );
-            
-            
             exit(EXIT_SUCCESS);
         }
-
-        
-
-
     }
 }
 
@@ -90,4 +86,5 @@ void ReadPipe( int fd[2])
         fprintf(stderr,"Failed to dup = %d\n\n",d);
         exit(1);
     }
+    printf("Open for Read\n");
 }

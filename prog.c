@@ -7,8 +7,8 @@
 #include "producer.h"
 int main(int argc, char *argv[])
 {
-    
-
+    char filename []="./main.txt";    
+    processFile(filename);
 
 
 

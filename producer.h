@@ -23,9 +23,7 @@ typedef struct filedata{
  char writerQueue [10];  // third queue to upper will write here and writer will read here
 
 /*MUtexes*/
-pthread_mutex_t mutcharQueue    = PTHREAD_MUTEX_INITIALIZER;  // mutex for character Queue
-pthread_mutex_t muttoUpperQueue = PTHREAD_MUTEX_INITIALIZER;// mutex for toUpperQueue
-pthread_mutex_t MmutwriterQueue = PTHREAD_MUTEX_INITIALIZER;
+
 
 
 #endif
