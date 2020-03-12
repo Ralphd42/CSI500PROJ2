@@ -6,12 +6,43 @@ pthread_mutex_t MmutwriterQueue = PTHREAD_MUTEX_INITIALIZER;
 
 
 
+
+
+
+void *readerThread_old( void *arg)
+{
+     
+    printf("\n1\n");
+
+    FileData * fd = (FileData *) arg;
+    printf( "\ndesc %s\n", fd->FileNameDesc);
+    FILE* fp = fopen(fd->FileNameDesc, "rb");
+    int chr =getc(fp);;
+    while (chr !=EOF)
+    {
+        pthread_mutex_lock(&mutcharQueue);
+
+
+
+        pthread_mutex_unlock(&mutcharQueue);
+        chr =getc(fp);    
+    }
+
+}
+
+
+
+
+
+
+
+
 /*
     1 take a file and a character as input
     void * arg will hold a pointer to FileData
     read file line by line
 */
-void *readerThread( void *arg)
+void *readerThread_old( void *arg)
 {
      
     printf("\n1\n");

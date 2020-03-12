@@ -19,9 +19,11 @@ typedef struct filedata{
 
 /* QUEUES */
  char charQueue   [10];  // first queue read thread writes here characterThread reads here
+ int cqp1,  cqp2;        // start and end 
  char toUpperQueue[10];  // second quere charaterthread writes here toUpper thread will read from here
+ int tqp1,  tqp2;
  char writerQueue [10];  // third queue to upper will write here and writer will read here
-
+int wqp1,  eqp2;
 /*MUtexes*/
 
 
