@@ -9,25 +9,31 @@ pthread_mutex_t MmutwriterQueue = PTHREAD_MUTEX_INITIALIZER;
 
 
 
-void *readerThread_old( void *arg)
+void *readerThread( void *arg)
 {
-     
+    cqp1 =0;  
+    cqp2 =0;
     printf("\n1\n");
 
     FileData * fd = (FileData *) arg;
     printf( "\ndesc %s\n", fd->FileNameDesc);
     FILE* fp = fopen(fd->FileNameDesc, "rb");
-    int chr =getc(fp);;
-    while (chr !=EOF)
-    {
+     int chr; //=
+    do 
+    {   
+       
+        //cqp1,  cqp2
         pthread_mutex_lock(&mutcharQueue);
+        chr =getc(fp);
+        if( cqp1 > QueueLen ){
+            cqp1=0;
 
-
+        }    
 
         pthread_mutex_unlock(&mutcharQueue);
-        chr =getc(fp);    
+            
     }
-
+    while (chr !=EOF);
 }
 
 
