@@ -9,16 +9,23 @@
 #include <stdbool.h>
 #include <ctype.h>
 
-/*thread prototypes*/
+/*thread function prototypes*/
 void *readerThread( void *arg);
 void *characterThread( void *arg);
 void *toupperThread( void *arg);
 void *writerThread( void *arg);
 
+/*Threads   */
+pthread_t ReaderThrd;
+pthread_t ChrThrd;
+pthread_t UpprThrd;
+pthread_t WriterThrd;
+
 /*constants*/
 #define QueueLen 10
 
 /* data structures  */
+/*Used to pass data to threads*/
 typedef struct filedata{
     char toreplace;
     char * FileNameDesc;

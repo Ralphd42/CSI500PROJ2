@@ -50,20 +50,19 @@ void processFile(char * fname)
         if( pid==0)
         {
             ReadPipe( fd);
-            pthread_t Reader;
-            pthread_t Writer;
+            
             FileData Fd;
             char input[20];
             scanf("%s",input);
             Fd.toreplace ='c';
             Fd.FileNameDesc =input;
             running=true;
-            pthread_create(&Reader,NULL,readerThread ,(void *) &Fd );
+            pthread_create(&ReaderThrd,NULL,readerThread ,(void *) &Fd );
 
-            pthread_create(&Writer,NULL,characterThread ,(void *) NULL );
+            
             void * status;
-            pthread_join(Reader,status  );
-            pthread_join(Writer, status );
+            pthread_join(ReaderThrd,status  );
+             
             exit(EXIT_SUCCESS);
         }
     }

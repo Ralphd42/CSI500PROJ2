@@ -89,3 +89,8 @@ iii.	Comments
 iv.	Efficiency
 
 https://www.geeksforgeeks.org/mutex-lock-for-linux-thread-synchronization/
+
+
+
+pipes no redirect.
+https://www.geeksforgeeks.org/c-program-demonstrate-fork-and-pipe/
