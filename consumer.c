@@ -54,9 +54,9 @@ void processFile(char * fname)
             FileData Fd;
             char input[20];
             scanf("%s",input);
-            Fd.toreplace ='c';
+            Fd.toreplace ='!';
             Fd.FileNameDesc =input;
-            running=true;
+            
             pthread_create(&ReaderThrd,NULL,readerThread ,(void *) &Fd );
 
             

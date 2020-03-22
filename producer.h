@@ -17,10 +17,16 @@ void *writerThread( void *arg);
 
 /*Threads   */
 pthread_t ReaderThrd;
-pthread_t ChrThrd;
-pthread_t UpprThrd;
-pthread_t WriterThrd;
+bool readstat;  //thread status
 
+pthread_t ChrThrd;
+bool charStat; // thread status
+
+pthread_t UpprThrd;
+bool upprStat; // thread status
+
+pthread_t WriterThrd;
+// no status needed
 /*constants*/
 #define QueueLen 10
 
@@ -40,8 +46,9 @@ int tqp1,  tqp2;         // start end
 char writerQueue [QueueLen];  // third queue to upper will write here and writer will read here
 int wqp1,  wqp2;     //start end of writer queue    
 
-/* other global variables  */
-bool running ;     
+/* helper functioins*/
+void cleanQueues();
+
 
 
 

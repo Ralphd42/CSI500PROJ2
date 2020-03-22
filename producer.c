@@ -8,15 +8,16 @@ pthread_mutex_t mutwriterQueue = PTHREAD_MUTEX_INITIALIZER;  // mutex for writer
 
 
 
-/* reads full file
-
-    writes to character queue
-    maintains 
+/* 
+    readerThread
+    FileData as inout paramter
+    reads full file
+    writes to character queue (charQueue)
+     
 */
 void *readerThread( void *arg)
-{
-    // initialize status and queue pointers
-    running =true;
+{   
+    readstat =true;
     cqp1 =0;  
     cqp2 =0;
     bool first =true;
@@ -30,10 +31,10 @@ void *readerThread( void *arg)
         {
             cqp1=0;
         }
-        if( cqp1 ==cqp2)
+        if( charQueue[cqp1] !='\0')
         {
-            // wrote as many characters as possible.  Give back to character thread
             pthread_mutex_unlock(&mutcharQueue);
+            sleep(1);
              
         }else
         {
@@ -43,89 +44,83 @@ void *readerThread( void *arg)
                 charQueue[cqp1++]=chr;
             }else
             {
-                running=false;
+                readstat=false;
             }
-            pthread_mutex_unlock(&mutcharQueue);
+            
             if( first)
             {
-                // start character thread
-                pthread_create(&ChrThrd,NULL,characterThread ,(void *) NULL );
+                pthread_create(&ChrThrd,NULL,characterThread ,(void *) & fd->toreplace );
             }
+            pthread_mutex_unlock(&mutcharQueue);
+            sleep(1);
             first =false;
         }
     }
-    while (running);
+    while (readstat);
+    
+    readstat=false;
     fclose(fp);
     void * status;
     // join and wait for characterThread to finish
     pthread_join(ChrThrd, status);
-   
     pthread_exit(NULL);
 }
 
 /*
-    The character thread component will scan the line and replace each
-	 blank character by the character supplied by the client. It will then pass the line to the toUpper thread through another queue of messages.
-    takes a char * to indicate replace variable
-    needed vars
-    cqp1 =0;  
-    cqp2 =0;
+    characterThread
 
-     tqp1,  tqp2;  
-
+    reads from charQueue
+    replaces spaces with space replacement character
+    writes new character to toUpperQueue  
 */
-
 void *characterThread( void *arg)
 {
+    charStat=true;
     bool first =true;
     char * p = (char *)arg;// replacement character
     cqp2 =0;
-    bool hasdata =false;
-    while (running || hasdata)
+    bool hasdata =true;
+    while (readstat || hasdata)
     {
-        pthread_mutex_lock(&mutcharQueue  );
-        if( (cqp2-1) !=cqp1)
+        hasdata =true;
+        if(charQueue[cqp2] != '\0'  && toUpperQueue[tqp1]=='\0' )
         {
-            // character is aavailable to read from char queue
-            char nv =charQueue[cqp2];     
+            pthread_mutex_lock(&mutcharQueue  );
+            char nv =charQueue[cqp2];
             if(charQueue[cqp2] == ' ' )
             {
                 nv =*p;
-
             }
-            
             charQueue[cqp2]='\0';
-            pthread_mutex_lock(&muttoUpperQueue);
+            pthread_mutex_lock(&muttoUpperQueue); // wait until upperqueue is available
             if( tqp1>=QueueLen)
             {
                 tqp1=0;
             }
-            toUpperQueue[tqp1] =nv;
-            
+            toUpperQueue[tqp1++] =nv;
             if( first)
             {
                 // kick off upper on first
                 pthread_create(&UpprThrd,NULL,toupperThread ,(void *) NULL );
-                
+                sleep(1);
+                first =false;    
             }
-            first =false;
-            
             pthread_mutex_unlock(&muttoUpperQueue);
-
-
             cqp2++;
             if( cqp2>=QueueLen)
             {
                 cqp2=0;
             }
             pthread_mutex_unlock(&mutcharQueue);
+            sleep(1);
         }else
         {
-            pthread_mutex_unlock(&mutcharQueue);
+            sleep(1);
             hasdata=false;
         }
-        
     }
+    
+    charStat =false;
     void * status;
     pthread_join(UpprThrd, status);
     pthread_exit(NULL);
@@ -141,30 +136,41 @@ void *toupperThread( void *arg)
 {
     bool hasdata=true;
     bool first =true;
-    while(hasdata || running)
+    upprStat =true;
+    wqp1 =0;
+    while(hasdata || charStat)
     {
         pthread_mutex_lock(&muttoUpperQueue);
-        if( (tqp2-1) !=tqp1)
+       // if( (tqp2-1) !=tqp1)
+        if(toUpperQueue[tqp2]!='\0'    &&  writerQueue[wqp1]=='\0')
         {
-            char nv =charQueue[tqp2];     
+            char nv =toUpperQueue[tqp2];     
             nv = toupper(nv);
-            charQueue[tqp2]='\0';
+            toUpperQueue[tqp2]='\0';
+            printf( "%c",nv );
+            fflush(stdout);
+            if(true){
             pthread_mutex_lock(&mutwriterQueue);
+            writerQueue[wqp1++] =nv;
             if(wqp1>=QueueLen)
             {
                 wqp1 =0;
             }
-            writerQueue[wqp1] =nv;
+            
             if( first)
             {
                 // kick off upper on first
                 char * outfile ="./ThOut.txt";
-                pthread_create(&WriterThrd,NULL,toupperThread ,(void *) outfile );
+                pthread_create(&WriterThrd,NULL,writerThread ,(void *) outfile );
+                first =false;
+                sleep(1);
                 
             }
-            first =false;
+            
             
             pthread_mutex_unlock(&mutwriterQueue);
+            sleep(1);
+            }   
             tqp2++;
             
             if( tqp2>=QueueLen)
@@ -172,10 +178,12 @@ void *toupperThread( void *arg)
                 tqp2=0;
             }
             pthread_mutex_unlock(&muttoUpperQueue);
+            sleep(1);
         }
         else
         {
             pthread_mutex_unlock(&muttoUpperQueue);
+            sleep(1);
             hasdata=false;
         }
         
@@ -183,6 +191,7 @@ void *toupperThread( void *arg)
 
     }
     void * status;
+    upprStat=false;
     pthread_join(WriterThrd, status);
     pthread_exit(NULL);
 }
@@ -201,11 +210,15 @@ void *writerThread( void *arg)
     bool hasdata=true;
     FILE* fp = fopen(fname, "w");
     char towrite;
-    while(hasdata || running)
+    wqp2 =0;
+    while(hasdata || upprStat)
     {
+        
         pthread_mutex_lock(&mutwriterQueue);
-        if( (wqp2-1) !=wqp1)
+       // if( (wqp2-1) !=wqp1)
+        if(writerQueue[wqp2]!='\0' )
         {   
+            printf(" -w has data -");
             towrite = writerQueue[wqp2];
             writerQueue[wqp2]='\0';
             wqp2++;
@@ -214,11 +227,14 @@ void *writerThread( void *arg)
                 wqp2=0;
             }
             pthread_mutex_unlock(&mutwriterQueue);// release before the IO call
+            sleep(1);
             fputc(towrite, fp);
+            printf("W %c", towrite);
             hasdata=true;
         }else
         {
             pthread_mutex_unlock(&mutwriterQueue);
+            sleep(1);
             hasdata=false;
         }
         
@@ -226,11 +242,28 @@ void *writerThread( void *arg)
     }
     // close the file
     fclose(fp);
+    printf("END WRITER");
     pthread_exit(NULL);
+
 }
 
 
 
+
+/*
+    cleanQueues()
+    empties character queues
+*/
+void cleanQueues()
+{
+
+    for (int i=0;i< QueueLen ;i++)
+    {
+        charQueue[i] ='\0';
+        toUpperQueue[i] ='\0';
+        writerQueue[i] ='\0';
+    }
+}
 
 
 
